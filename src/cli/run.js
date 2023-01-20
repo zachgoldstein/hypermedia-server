@@ -35,12 +35,33 @@ function prettyPrint(argv, object, rules) {
 function createApp(db, routes, middlewares, argv) {
   const app = jsonServer.create()
 
-  const { foreignKeySuffix } = argv
+  const routerOpts = {}
 
-  const router = jsonServer.router(
-    db,
-    foreignKeySuffix ? { foreignKeySuffix } : undefined
-  )
+  // Check for hypermedia mode, load the template mapping
+  if (argv.hypermedia) {
+    routerOpts.hypermedia = true
+
+    // Load template mapping
+    if (!argv.template) {
+      console.log(`Error: templates mapping file not set`)
+      process.exit(1)
+    }
+    if (!fs.existsSync(argv.template)) {
+      console.log(
+        `Error: templates mapping file ${argv.template} doesn't exist`
+      )
+      process.exit(1)
+    }
+    const templates = JSON.parse(fs.readFileSync(argv.template, 'utf8'))
+
+    // Make the template mapping data available to the router
+    routerOpts.templates = templates
+  }
+  if (argv.foreignKeySuffix) {
+    Object.assign(routerOpts, { foreignKeySuffix: argv.foreignKeySuffix })
+  }
+
+  const router = jsonServer.router(db, routerOpts)
 
   const defaultsOpts = {
     logger: !argv.quiet,

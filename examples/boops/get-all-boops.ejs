@@ -1,0 +1,24 @@
+<ul class="boop-list">
+  <% top.forEach(function(boop) { %>
+  <li id="boop-<%= boop.id %>">
+    <p><strong>Boop: <%= boop.id %></strong> time updated: <%= boop.time %></p>
+    <button 
+        hx-delete="/boops/<%= boop.id %>" 
+        hx-target="#boop-<%= boop.id %>"
+        hx-swap="outerHTML">
+        Delete
+    </button>
+    <button 
+        hx-put="/boops/<%= boop.id %>" 
+        hx-vals='js:{time: Date.now()}' 
+        hx-target="#boop-<%= boop.id %>">
+        Update
+    </button>
+    <button 
+        hx-target="#boop-<%= boop.id %>"
+        hx-get="/boops/<%= boop.id %>">
+        Get
+    </button>  
+  </li>
+  <% }); %>
+</ul>

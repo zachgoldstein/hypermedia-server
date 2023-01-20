@@ -74,6 +74,15 @@ module.exports = function () {
         description: 'Path to config file',
         default: 'json-server.json',
       },
+      hypermedia: {
+        alias: 'hm',
+        description: 'Return hypermedia instead of json',
+      },
+      template: {
+        alias: 't',
+        description: 'Path to hypermedia template files',
+        default: './templates.json',
+      },
     })
     .boolean('watch')
     .boolean('read-only')

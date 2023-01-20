@@ -1,0 +1,20 @@
+<li id="boop-<%= top.id %>">
+    <p><strong>Boop: <%= top.id %></strong> time updated: <%= top.time %></p>
+    <button 
+        hx-delete="/boops/<%= top.id %>" 
+        hx-target="#boop-<%= top.id %>"
+        hx-swap="outerHTML">
+        Delete
+    </button>
+    <button 
+        hx-put="/boops/<%= top.id %>" 
+        hx-vals='js:{time: Date.now()}' 
+        hx-target="#boop-<%= top.id %>">
+        Update
+    </button>
+    <button 
+        hx-target="#boop-<%= top.id %>"
+        hx-get="/boops/<%= top.id %>">
+        Get
+    </button>
+</li>

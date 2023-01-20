@@ -1,0 +1,9 @@
+{
+    "boops": {
+        "POST": "examples/boops/post-boop.ejs",
+        "GET-ALL": "examples/boops/get-all-boops.ejs",
+        "GET": "examples/boops/get-boop.ejs",
+        "PUT": "examples/boops/get-boop.ejs",
+        "DELETE": "examples/boops/delete-boop.ejs"
+    }
+}

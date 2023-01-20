@@ -5,6 +5,7 @@ const lodashId = require('lodash-id')
 const low = require('lowdb')
 const Memory = require('lowdb/adapters/Memory')
 const FileSync = require('lowdb/adapters/FileSync')
+const path = require('path')
 const bodyParser = require('../body-parser')
 const validateData = require('./validate-data')
 const plural = require('./plural')
@@ -41,7 +42,37 @@ module.exports = (db, opts) => {
 
   // Expose render
   router.render = (req, res) => {
-    res.jsonp(res.locals.data)
+    // Return a hypermedia object if needed
+    if (opts.hypermedia) {
+      const trimmedPath = req.path.endsWith('/')
+        ? req.path.slice(0, -1)
+        : req.path
+      const components = trimmedPath.split('/')
+      const templateName = components[1]
+      let templateMethod = ''
+
+      if (components.length >= 2 && req.method === 'POST') {
+        templateMethod = 'POST'
+      }
+      if (components.length === 2 && req.method === 'GET') {
+        templateMethod = 'GET-ALL'
+      }
+      if (components.length >= 3 && req.method === 'GET') {
+        templateMethod = 'GET'
+      }
+      if (components.length >= 3 && req.method === 'PUT') {
+        templateMethod = 'PUT'
+      }
+      if (components.length >= 3 && req.method === 'DELETE') {
+        templateMethod = 'DELETE'
+      }
+
+      const templatePath = opts.templates[templateName][templateMethod]
+      const templateFullPath = path.join(process.cwd(), templatePath)
+      res.render(templateFullPath, { top: res.locals.data })
+    } else {
+      res.jsonp(res.locals.data)
+    }
   }
 
   // GET /db

@@ -91,6 +91,7 @@ __Please help me build OSS__ 👉 [GitHub Sponsors](https://github.com/sponsors/
   * [HTTPS](#https)
   * [Add custom routes](#add-custom-routes)
   * [Add middlewares](#add-middlewares)
+  * [Return Hypermedia](#return-hypermedia)
   * [CLI usage](#cli-usage)
   * [Module](#module)
     + [Simple example](#simple-example)
@@ -400,6 +401,37 @@ json-server db.json --middlewares ./hello.js
 json-server db.json --middlewares ./first.js ./second.js
 ```
 
+### Return Hypermedia
+
+You can optionally return hypermedia objects instead of JSON
+Use the `--hypermedia` option and set a path to a template mapping file with `--template`
+
+```bash
+json-server db.json --hypermedia --template ./examples/boops/templates.json
+```
+
+If your template mapping file, `templates.json` looks like this:
+
+```json
+{
+    "boops": {
+        "POST": "examples/boops/post-boop.ejs",
+        "GET-ALL": "examples/boops/get-all-boops.ejs",
+        "GET": "examples/boops/get-boop.ejs",
+        "PUT": "examples/boops/put-boop.ejs",
+        "DELETE": "examples/boops/delete-boop.ejs"
+    }
+}
+```
+
+Then a GET request to `/boops/1` will: 
+- Retrieve the template file in `examples/boops/get-boop.ejs`
+- Load the data for `/boops/`
+- Render the template with this data
+- Return the rendered html view
+
+This is very useful when working with tools like [htmx](https://htmx.org/), which expect an API to return hypermedia instead of just straight data.
+
 ### CLI usage
 
 ```
@@ -412,6 +444,8 @@ Options:
   --watch, -w        Watch file(s)                                     [boolean]
   --routes, -r       Path to routes file
   --middlewares, -m  Paths to middleware files                           [array]
+  --hypermedia, -hm  Return hypermedia instead of json                 [boolean]
+  --template, -t     Path to the template mapping file
   --static, -s       Set static files directory
   --read-only, --ro  Allow only GET requests                           [boolean]
   --no-cors, --nc    Disable Cross-Origin Resource Sharing             [boolean]
